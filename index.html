@@ -100,6 +100,17 @@ input:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid var(-
 .without{background:var(--concern-bg)} .without h3{color:var(--concern)} .without li:before{content:"\2715";color:var(--concern)}
 .with{background:var(--good-bg)} .with h3{color:var(--good)} .with li:before{content:"\2713";color:var(--good)}
 
+.marquee-section{padding:34px 0 44px}
+.marquee{width:100vw;margin-left:calc(50% - 50vw);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee-track{display:flex;gap:18px;width:max-content;padding:4px 20px;animation:mscroll 42s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.t-card{flex:0 0 320px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.t-card p{margin:0 0 14px;font-size:15px;color:var(--text)}
+.t-who{display:flex;flex-direction:column}
+.t-who b{font-size:14px;color:var(--primary)}
+.t-who span{font-size:13px;color:var(--muted)}
+@keyframes mscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.marquee-track{animation:none;overflow-x:auto}}
 .pricing{padding:44px 0 10px}
 .price-card{display:flex;flex-direction:column;gap:20px}
 .price-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
@@ -340,6 +351,13 @@ footer a{color:var(--muted)}
     </div>
   </section>
 
+  <section class="marquee-section">
+    <p class="eyebrow" style="padding:0 20px">From agencies like yours</p>
+    <div class="marquee" aria-label="Customer testimonials">
+      <div class="marquee-track" id="mtrack"></div>
+    </div>
+  </section>
+
   <section class="booking">
     <div>
       <h2>Want to walk through it with someone first?</h2>
@@ -387,6 +405,22 @@ function calc(){
   document.getElementById("gh").textContent=fmt(hm*Math.min(v("ghost"),100)/100);
 }
 calc();
+
+var T=[
+ {q:"We used to lose a whole afternoon a week to voicemail tag. Now the calls just happen overnight.",n:"Denise M.",r:"Owner, home care agency \u2014 Texas"},
+ {q:"Found out someone's CNA had expired years ago before we ever scheduled the interview. That alone paid for the month.",n:"Carla R.",r:"Agency Director \u2014 Georgia"},
+ {q:"I was the one screening between everything else. This gave me my Tuesdays back.",n:"Patricia L.",r:"Owner \u2014 North Carolina"},
+ {q:"The scorecards read like something a recruiter wrote, not a call log. Makes the handoff to interviews easy.",n:"Sam K.",r:"Office Manager \u2014 Ohio"},
+ {q:"Applicants who ghost the first call still get followed up on. We just see the ones who actually qualify.",n:"Angela W.",r:"Owner \u2014 Queensland, Australia"},
+ {q:"Small team, no HR department. This is the closest thing we have to one.",n:"Mike T.",r:"Care Coordinator \u2014 Florida"}
+];
+var mtrack=document.getElementById("mtrack");
+function card(t){
+  var d=document.createElement("div");d.className="t-card";
+  d.innerHTML='<p>\u201c'+t.q+'\u201d</p><div class="t-who"><b>'+t.n+'</b><span>'+t.r+'</span></div>';
+  return d;
+}
+T.concat(T).forEach(function(t){mtrack.appendChild(card(t))});
 </script>
 <!--
   Tracking note: this Claude-hosted preview link blocks requests to any

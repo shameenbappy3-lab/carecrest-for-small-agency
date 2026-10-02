@@ -26,7 +26,7 @@
 
   var ENDPOINT = "/api/track";
   var HEARTBEAT_MS = 15000;
-  var MAX_HEARTBEATS = 40; // ~10 minutes of engaged time, then stop
+  var MAX_HEARTBEATS = 60; // 15 minutes of foreground time, then stop sending beats
   var MAX_EVENTS = 80; // hard cap per page load
   var ID_RE = /^[A-Za-z0-9_-]{4,64}$/;
 
@@ -113,7 +113,6 @@
 
   var engagedMs = 0;
   var visibleSince = document.visibilityState === "visible" ? Date.now() : null;
-  var lastActivity = Date.now();
 
   var interactionCount = 0;
   var firstInteractionSent = false;
@@ -216,7 +215,6 @@
     return function (e) {
       if (e && e.isTrusted === false) return;
       interactionCount++;
-      lastActivity = Date.now();
       if (!firstInteractionSent) {
         firstInteractionSent = true;
         send("interaction", {
@@ -252,7 +250,6 @@
     "scroll",
     function (e) {
       if (e && e.isTrusted === false) return;
-      lastActivity = Date.now();
       clearTimeout(scrollTimer);
       scrollTimer = setTimeout(checkScroll, 150);
     },
@@ -338,9 +335,9 @@
 
   setInterval(function () {
     if (heartbeats >= MAX_HEARTBEATS) return;
+    // Tab in the foreground = the page is being read. Someone reading for
+    // 3-4 minutes without touching the mouse still counts.
     if (document.visibilityState !== "visible") return;
-    // Only count time when the person did something in the last 30 s.
-    if (Date.now() - lastActivity > 30000) return;
     heartbeats++;
     send("heartbeat");
   }, HEARTBEAT_MS);

@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
@@ -31,6 +31,8 @@
 
     <nav>
       <a href="#calculator">Calculator</a>
+
+      <a href="#scorecard">Sample scorecard</a>
 
       <a href="https://app.carecrest.ai/demo">
         Live demo
@@ -498,7 +500,7 @@
 
   <!-- PROOF -->
 
-  <section class="proof">
+  <section class="proof" id="scorecard">
 
     <p
       class="eyebrow"
@@ -526,23 +528,84 @@
           Real scorecard from a CareCrest screening
         </span>
 
-        <a
-          class="scorecard-frame"
-          href="images/scorecard-sample.jpeg"
-          target="_blank"
-          rel="noopener"
-          aria-label="Open the full-size scorecard in a new tab"
-        >
-          <img
-            src="images/scorecard-sample.jpeg"
-            alt="CareCrest caregiver candidate evaluation scorecard showing a 68.6% overall score, interview summary, strengths, concerns and section scores"
-            loading="lazy"
-          >
-        </a>
+        <div class="scorecard-frame">
 
-        <figcaption>
-          Tap or click to view full size
-        </figcaption>
+          <div class="sc-bar">
+
+            <div
+          class="sc-tabs"
+          role="tablist"
+          aria-label="Scorecard pages"
+        >
+          <button
+            type="button"
+            class="sc-tab is-active"
+            role="tab"
+            id="sc-tab-1"
+            aria-selected="true"
+            aria-controls="sc-panel-1"
+          >
+            Summary
+          </button>
+          <button
+            type="button"
+            class="sc-tab"
+            role="tab"
+            id="sc-tab-2"
+            aria-selected="false"
+            aria-controls="sc-panel-2"
+            tabindex="-1"
+          >
+            Scores &amp; answers
+          </button>
+        </div>
+
+            <a
+              class="sc-pdf"
+              href="images/carecrest-sample-scorecard.pdf"
+              target="_blank"
+              rel="noopener"
+            >
+              Full PDF &nearr;
+            </a>
+
+          </div>
+
+          <div class="sc-body">
+
+          <div
+            class="sc-panel is-active"
+            role="tabpanel"
+            id="sc-panel-1"
+            aria-labelledby="sc-tab-1"
+          >
+            <img
+              src="images/scorecard-1.jpg"
+              alt="CareCrest caregiver candidate evaluation scorecard: 68.6% overall score with the recommendation to consider for an in-person interview, an interview summary, tags, and strengths and concerns"
+              width="1400"
+              height="1567"
+            >
+          </div>
+
+          <div
+            class="sc-panel"
+            role="tabpanel"
+            id="sc-panel-2"
+            aria-labelledby="sc-tab-2"
+            hidden
+          >
+            <img
+              src="images/scorecard-2.jpg"
+              alt="Scorecard section scores for administrative, availability, physical and clinical competency, followed by the applicant's answers to scenario and emergency questions and the final recommendation"
+              width="1400"
+              height="1926"
+              loading="lazy"
+            >
+          </div>
+
+          </div>
+
+        </div>
 
       </figure>
 
@@ -600,7 +663,8 @@
               <b>A written summary of the call</b>
               <p>
                 Experience, availability and how they handled each care
-                scenario, written up like a recruiter's note.
+                scenario, written up like a recruiter's note, with the
+                applicant's actual answers and how each was scored.
               </p>
             </div>
           </li>
@@ -730,5 +794,31 @@
 
 <script src="main.js" defer></script>
 <script src="tracker.js" defer></script>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.sc-tab'));
+  if(!tabs.length) return;
+  function show(tab){
+    tabs.forEach(function(t){
+      var on=t===tab;
+      t.classList.toggle('is-active',on);
+      t.setAttribute('aria-selected',on);
+      t.tabIndex=on?0:-1;
+      var p=document.getElementById(t.getAttribute('aria-controls'));
+      if(p){p.hidden=!on;p.classList.toggle('is-active',on);}
+    });
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(t);});
+    t.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        var n=tabs[(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length];
+        show(n);n.focus();
+      }
+    });
+  });
+})();
+</script>
+
 
 </html>
